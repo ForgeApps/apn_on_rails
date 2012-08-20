@@ -1,14 +1,14 @@
 # Represents an iPhone (or other APN enabled device).
 # An APN::Device can have many APN::Notification.
-# 
+#
 # In order for the APN::Feedback system to work properly you *MUST*
 # touch the <tt>last_registered_at</tt> column everytime someone opens
 # your application. If you do not, then it is possible, and probably likely,
 # that their device will be removed and will no longer receive notifications.
-# 
+#
 # Example:
 #   Device.create(:token => '5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6jrw7qz')
-class APN::Device < APN::Base
+class APN::Device < ActiveRecord::Base
 
   has_many :notifications, :class_name => 'APN::Notification'
 
@@ -17,17 +17,17 @@ class APN::Device < APN::Base
 
   before_save :set_last_registered_at
 
-  # The <tt>feedback_at</tt> accessor is set when the 
+  # The <tt>feedback_at</tt> accessor is set when the
   # device is marked as potentially disconnected from your
   # application by Apple.
   attr_accessor :feedback_at
-  
+
   def self.table_name # :nodoc:
     "apn_devices"
   end
 
   # Stores the token (Apple's device ID) of the iPhone (device).
-  # 
+  #
   # If the token comes in like this:
   #  '<5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6jrw7qz>'
   # Then the '<' and '>' will be stripped off.
