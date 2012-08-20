@@ -1,6 +1,6 @@
-# Represents the message you wish to send. 
+# Represents the message you wish to send.
 # An APN::Notification belongs to an APN::Device.
-# 
+#
 # Example:
 #   apn = APN::Notification.new
 #   apn.badge = 5
@@ -8,10 +8,10 @@
 #   apn.alert = 'Hello!'
 #   apn.device = APN::Device.find(1)
 #   apn.save
-# 
+#
 # To deliver call the following method:
 #   APN::Notification.send_notifications
-# 
+#
 # As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
 # so as to not be sent again.
 class APN::Notification < APN::Base
@@ -21,8 +21,13 @@ class APN::Notification < APN::Base
 
   belongs_to :device, :class_name => 'APN::Device'
 
+  def self.table_name # :nodoc:
+    "apn_notifications"
+  end
+
+
   # Stores the text alert message you want to send to the device.
-  # 
+  #
   # If the message is over 150 characters long it will get truncated
   # to 150 characters with a <tt>...</tt>
   def alert=(message)
@@ -33,7 +38,7 @@ class APN::Notification < APN::Base
   end
 
   # Creates a Hash that will be the payload of an APN.
-  # 
+  #
   # Example:
   #   apn = APN::Notification.new
   #   apn.badge = 5
@@ -41,7 +46,7 @@ class APN::Notification < APN::Base
   #   apn.alert = 'Hello!'
   #   apn.apple_hash # => {"aps" => {"badge" => 5, "sound" => "my_sound.aiff", "alert" => "Hello!"}}
   #
-  # Example 2: 
+  # Example 2:
   #   apn = APN::Notification.new
   #   apn.badge = 0
   #   apn.sound = true
@@ -65,7 +70,7 @@ class APN::Notification < APN::Base
   end
 
   # Creates the JSON string required for an APN message.
-  # 
+  #
   # Example:
   #   apn = APN::Notification.new
   #   apn.badge = 5
@@ -88,14 +93,14 @@ class APN::Notification < APN::Base
 
     # Opens a connection to the Apple APN server and attempts to batch deliver
     # an Array of notifications.
-    # 
+    #
     # This method expects an Array of APN::Notifications. If no parameter is passed
     # in then it will use the following:
     #   APN::Notification.all(:conditions => {:sent_at => nil})
-    # 
+    #
     # As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
     # so as to not be sent again.
-    # 
+    #
     # This can be run from the following Rake task:
     #   $ rake apn:notifications:deliver
     def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))

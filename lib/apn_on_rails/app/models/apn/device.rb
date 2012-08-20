@@ -21,6 +21,10 @@ class APN::Device < APN::Base
   # device is marked as potentially disconnected from your
   # application by Apple.
   attr_accessor :feedback_at
+  
+  def self.table_name # :nodoc:
+    "apn_devices"
+  end
 
   # Stores the token (Apple's device ID) of the iPhone (device).
   # 
